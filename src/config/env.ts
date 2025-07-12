@@ -63,11 +63,4 @@ export const isProduction = import.meta.env.PROD;
 
 export default config;
 
-// Debug log to verify environment variables (development only)
-if (import.meta.env.DEV) {
-  console.log('🔧 Environment Configuration:', {
-    apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
-    apiTimeout: import.meta.env.VITE_API_TIMEOUT,
-    resolvedBaseUrl: config.api.baseUrl,
-  });
-} 
+ 
