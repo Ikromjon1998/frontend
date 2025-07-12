@@ -25,6 +25,11 @@ export interface BatchMatchResult {
   match: string | null;
   confidence: number;
   error: string | null;
+  scores?: {
+    tfidf: number;
+    levenshtein: number;
+    token_set: number;
+  };
 }
 
 export interface HealthResponse {

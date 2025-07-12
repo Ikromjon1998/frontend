@@ -3,12 +3,17 @@ import { useDropzone } from 'react-dropzone';
 import { apiService } from '../services/api';
 import { validateFile, parseCSV, parseJSON, exportToCSV, getConfidenceColor, formatConfidence } from '../utils/helpers';
 import type { BatchMatchResult } from '../types/api';
+import DetailedScoresModal from './DetailedScoresModal';
 
 const BatchUpload: React.FC = () => {
   const [results, setResults] = useState<BatchMatchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+  
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedResult, setSelectedResult] = useState<BatchMatchResult | null>(null);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
@@ -40,6 +45,8 @@ const BatchUpload: React.FC = () => {
       const response = await apiService.batchMatch(file);
       clearInterval(progressInterval);
       setUploadProgress(100);
+      console.log('📊 Batch API Response:', response);
+      console.log('📊 Sample result:', response[0]);
       setResults(response);
 
       // Reset progress after a delay
@@ -72,6 +79,22 @@ const BatchUpload: React.FC = () => {
     }));
 
     exportToCSV(exportData, 'fuzzy_match_results.csv');
+  };
+
+  const handleShowDetails = (result: BatchMatchResult) => {
+    console.log('🔍 Clicked on result:', result);
+    if (result.match) {
+      console.log('✅ Opening modal with result:', result);
+      setSelectedResult(result);
+      setModalOpen(true);
+    } else {
+      console.log('❌ No match available');
+    }
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedResult(null);
   };
 
   const successfulMatches = results.filter(r => r.match && !r.error).length;
@@ -186,9 +209,13 @@ const BatchUpload: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       {result.match ? (
                         <div className="flex items-center space-x-2">
-                          <span className={`text-sm font-medium ${getConfidenceColor(result.confidence).replace('bg-', 'text-')}`}>
+                          <button
+                            onClick={() => handleShowDetails(result)}
+                            className={`text-sm font-medium ${getConfidenceColor(result.confidence).replace('bg-', 'text-')} hover:underline cursor-pointer`}
+                            title="Click to view match details"
+                          >
                             {formatConfidence(result.confidence)}
-                          </span>
+                          </button>
                           <div className="w-16 bg-gray-200 rounded-full h-1">
                             <div
                               className={`h-1 rounded-full ${getConfidenceColor(result.confidence)}`}
@@ -221,6 +248,17 @@ const BatchUpload: React.FC = () => {
             </table>
           </div>
         </div>
+      )}
+
+      {/* Detailed Scores Modal */}
+      {selectedResult && (
+        <DetailedScoresModal
+          isOpen={modalOpen}
+          onClose={handleCloseModal}
+          entityName={selectedResult.match || ''}
+          confidence={selectedResult.confidence}
+          scores={selectedResult.scores || { tfidf: 0, levenshtein: 0, token_set: 0 }}
+        />
       )}
     </div>
   );
