@@ -45,8 +45,6 @@ const BatchUpload: React.FC = () => {
       const response = await apiService.batchMatch(file);
       clearInterval(progressInterval);
       setUploadProgress(100);
-      console.log('📊 Batch API Response:', response);
-      console.log('📊 Sample result:', response[0]);
       setResults(response);
 
       // Reset progress after a delay
@@ -82,13 +80,9 @@ const BatchUpload: React.FC = () => {
   };
 
   const handleShowDetails = (result: BatchMatchResult) => {
-    console.log('🔍 Clicked on result:', result);
     if (result.match) {
-      console.log('✅ Opening modal with result:', result);
       setSelectedResult(result);
       setModalOpen(true);
-    } else {
-      console.log('❌ No match available');
     }
   };
 
@@ -210,6 +204,7 @@ const BatchUpload: React.FC = () => {
                       {result.match ? (
                         <div className="flex items-center space-x-2">
                           <button
+                            type="button"
                             onClick={() => handleShowDetails(result)}
                             className={`text-sm font-medium ${getConfidenceColor(result.confidence).replace('bg-', 'text-')} hover:underline cursor-pointer`}
                             title="Click to view match details"
@@ -257,7 +252,7 @@ const BatchUpload: React.FC = () => {
           onClose={handleCloseModal}
           entityName={selectedResult.match || ''}
           confidence={selectedResult.confidence}
-          scores={selectedResult.scores || { tfidf: 0, levenshtein: 0, token_set: 0 }}
+          scores={selectedResult.scores}
         />
       )}
     </div>
