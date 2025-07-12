@@ -69,7 +69,7 @@ const SingleMatch: React.FC = () => {
                   id="search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyPress}
                   placeholder="Enter entity name and press Enter or click Search..."
                   className="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   disabled={loading}
