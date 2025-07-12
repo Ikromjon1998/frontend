@@ -92,7 +92,7 @@ const DetailedScoresModal: React.FC<DetailedScoresModalProps> = ({
           {/* Detailed Scores */}
           <div>
             <h4 className="text-sm font-medium text-gray-500 mb-4">Individual Scores</h4>
-            {scores && scores.tfidf !== undefined ? (
+            {scores ? (
               <div className="space-y-4">
                 {/* TF-IDF Score */}
                 <div>
