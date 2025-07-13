@@ -39,7 +39,7 @@ const SingleMatch: React.FC = () => {
     e.preventDefault();
     performSearch(query);
     // Keep focus on the input field
-    setTimeout(() => inputRef.current?.focus(), 0);
+    refocusInput();
   }, [query, performSearch]);
 
   // Handle Enter key
