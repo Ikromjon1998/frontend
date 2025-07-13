@@ -97,7 +97,7 @@ const SingleMatch: React.FC = () => {
             </div>
           </div>
           {error && (
-            <div className="text-sm text-red-600">
+            <div className="text-sm text-red-600" role="alert">
               {error}
             </div>
           )}
